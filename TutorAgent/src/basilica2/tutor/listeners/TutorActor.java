@@ -32,6 +32,7 @@
 package basilica2.tutor.listeners;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -123,6 +124,10 @@ public class TutorActor extends BasilicaAdapter implements TimeoutReceiver
 		public String acceptText;
 		public String cancelAnnotation;
 		public String cancelText;
+		//Behzad: The properties that are needed for inserting the random elements
+		public Map<String, List<String>> randomElements = new HashMap<String, List<String>>();
+		public Map<String, String> htmlTagElements = new HashMap<String, String>();
+		public Map<String, String> selectedRandomElement = new HashMap<String, String>();
 
 		public Dialog(String conceptName, String scenarioName, String introText, String cueAnnotation, String cueText, String cancelAnnotation, String cancelText)
 		{

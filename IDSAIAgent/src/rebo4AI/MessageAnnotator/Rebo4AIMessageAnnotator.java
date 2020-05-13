@@ -150,7 +150,7 @@ public class Rebo4AIMessageAnnotator implements BasilicaPreProcessor {
 			
 			List<String> matchedTerms = new ArrayList<String>();
 			matchedTerms.add("without reason");
-			newme.addMyAnnotation("IDSAI_QUESTION1_WITHOUT_REASON", matchedTerms);
+			newme.addAnnotation("IDSAI_QUESTION1_WITHOUT_REASON", matchedTerms);
 //			newme.addMyAnnotation("QUESTION1_WITHOUT_REASON_ANNOTATION", matchedTerms);
 			
 		} 
