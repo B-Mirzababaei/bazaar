@@ -133,6 +133,109 @@ public class TutorActor extends BasilicaAdapter implements TimeoutReceiver
 			this.acceptText = cueText;
 			this.cancelAnnotation = cancelAnnotation;
 			this.cancelText = cancelText;
+
+			/* Behzad 
+			 * It is about adding random elements in whatever the agent wants to say. In this version, a phrase is selected randomly when a Dialog object wants to be created.
+			 * If you want to add random elements in a specific scenario, follow these steps:
+			 * 1. create this folder: runtime/data
+			 * 2. create this folder: runtime/data/<conceptName of scenario> 
+			 * 3. create this file: runtime/data/<conceptName of scenario>/<use a string that you want to replace it with random elements>.txt 
+			 *     3.1 the name of txt file should be lower case and the name in scenario file should be upper case
+			 *     3.2 each row of this txt file contains a phrase
+			 *     
+			 *      
+			 * For example: 
+			 * 	This is my random file: runtime/data/IDSAI/random_example.txt in which each line has a phrase 
+			 *     a fish
+			 *     a baby
+			 *     a table
+			 *     ...
+			 *     
+			 *  and in the scenario file scenario-idsai.xml, in concepts tag, we have:
+			 *  <concept label="question1">
+			 *		<phrase>Is RANDOM_EXAMPLE intelligent or not? Why? </phrase>
+			 *	</concept>
+			 *
+			 * When the Dialog object is creating, RANDOM_EXAMPLE will be replaced with the one of the elements in random_example.txt
+			 * 
+			 * 
+			 * We can use this method to add HTML tags in responses.
+			 * 
+			 * PLEASE LOOK AT THE "IDSAIAgent\runtime\dialogues\scenario-idsai.xml" AND THE FILES OF THIS FOLDER "\IDSAIAgent\runtime\data\IDSAI"
+			 */ 
+			File folder = new File("data/" + conceptName);
+			if (folder.exists() && folder.isDirectory()) {
+				loadDictionaryFolder(folder);
+				for (Map.Entry<String,List<String>> entry : randomElements.entrySet()) {
+					String key= entry.getKey();
+					if (key.equals("RANDOM_EXAMPLE")) {
+						List<String> values = entry.getValue();
+						selectedRandomElement.put(key, values.get((int) Math.floor(values.size() * Math.random())));
+					}
+					if (key.equals("HTML_TAGS")) {
+						List<String> values = entry.getValue();
+						for (String tag : values) {
+							htmlTagElements.put(tag.split("\t")[0], tag.split("\t")[1]);	
+						}
+						
+					}
+					
+					
+			
+				}
+			}
+			for (Map.Entry<String,String> entry : selectedRandomElement.entrySet()) {
+				this.introText = this.introText.replace(entry.getKey(), entry.getValue());
+				this.cancelText = this.cancelText.replace(entry.getKey(), entry.getValue());
+				this.acceptText = this.acceptText.replace(entry.getKey(), entry.getValue());
+			}
+			for (Map.Entry<String,String> entry : htmlTagElements.entrySet()) {
+				this.introText = this.introText.replace(entry.getKey(), entry.getValue());
+				this.cancelText = this.cancelText.replace(entry.getKey(), entry.getValue());
+				this.acceptText = this.acceptText.replace(entry.getKey(), entry.getValue());
+			}
+		}
+
+		private void loadDictionaryFolder(File dir)
+		{
+			File[] dictNames = dir.listFiles();
+
+			for (File dictFile : dictNames)
+			{
+				if (dictFile.isDirectory())
+					loadDictionaryFolder(dictFile);
+				else if(dictFile.getName().endsWith(".txt"))
+				{
+					String name = dictFile.getName().replace(".txt", "").toUpperCase();
+					randomElements.put(name, loadDictionary(dictFile));
+				}
+			}
+		}
+		
+		private List<String> loadDictionary(File dict)
+		{
+			List<String> dictionary = new ArrayList<String>();
+			try
+			{
+				BufferedReader fr = new BufferedReader(new FileReader(dict));
+
+				String line = fr.readLine();
+				while (line != null)
+				{
+					line = line.trim();
+					if (line.length() > 0)
+					{
+						dictionary.add(line.trim());
+					}
+					line = fr.readLine();
+				}
+				fr.close();
+			}
+			catch (Exception e)
+			{
+				Logger.commonLog(getClass().getSimpleName(), Logger.LOG_ERROR, "Error while reading Dictionary: " + dict.getName() + " (" + e.toString() + ")");
+			}
+			return dictionary;
 		}
 	}
 
@@ -186,6 +289,10 @@ public class TutorActor extends BasilicaAdapter implements TimeoutReceiver
 						{
 							Element introElement = (Element) introNodes.item(0);
 							introText = introElement.getTextContent();
+							/* Behzad, if you want to add hyperlink in dialog-config.xml, you need to do sth here!!!
+							 * Right now, you don't know, but you will figure it out. Maybe this place is wrong at all.
+							 */
+							//introText = introText + " " + "<a href=\"https://www.google.com\">HERE.</a>";
 						}
 						NodeList cueNodes = dialogElement.getElementsByTagName("accept");
 						if ((cueNodes != null) && (cueNodes.getLength() != 0))
@@ -232,6 +339,9 @@ public class TutorActor extends BasilicaAdapter implements TimeoutReceiver
 			System.out.println("OUT OF SLEEP!");*/
 			block = false;
 		}
+		/* Behzad
+		 * Based on the type of event, a function is called to handle it. I need a definition for each Event.
+		 */
 		if (e instanceof DoTutoringEvent)
 		{
 			//queue up the start of the tutoring engine.
@@ -322,6 +432,10 @@ public class TutorActor extends BasilicaAdapter implements TimeoutReceiver
 
 	private synchronized void handleRequestDetectedEvent(MessageEvent e)
 	{
+		/* Behzad
+		 * Check here, this function check "accept" and "reject" annotations in dialogues-config
+		 * maybe you find a way to choose a dialog by a prompt
+		 */
 		for(String concept : e.getAllAnnotations())
 		{
 			Dialog killMeNow = null;
@@ -551,6 +665,10 @@ public class TutorActor extends BasilicaAdapter implements TimeoutReceiver
 
 	private void launchDialogOffer(Dialog d)
 	{
+		/* Behzad:
+		 * In this function, one of greetings sentences will be selected.
+		 * The list of greetings are located in /runtime/dialogues/dialogues-config.xml 
+		 */
 		if (enlistedDialog != null)
 		{
 			//TODONE: gracefully clear previous dialog if need be (now handling "requests" internally)
@@ -580,8 +698,45 @@ public class TutorActor extends BasilicaAdapter implements TimeoutReceiver
 		t.start();
 	}
 
+	private String selectIntroString(String intro, String userName) {
+		// Behzad: randomly select one of the greeting sentences 
+		String replacedText = null;
+		if(userName != null) {
+			replacedText = intro.replaceAll("\\[USERNAME\\]", userName);
+		} else {
+			replacedText = intro.replaceAll("\\[USERNAME\\]", "");
+		}
+		
+		String[] texts = null;
+		texts = replacedText.split(" \\| ");
+		return texts[(int)(Math.random()*texts.length)];
+	}
+	
+	private List<String> replaceRandomPhrase(List<String> tutorTurns) {
+		// Behzad: Look for the keywords and replace them with random elements or html tags
+		for (int i = 0; i < tutorTurns.size(); i++) {
+			for (Map.Entry<String,String> entry : this.proposedDialogs.get(this.currentConcept).selectedRandomElement.entrySet()) {
+				tutorTurns.set(i, tutorTurns.get(i).replace(entry.getKey(), entry.getValue()));
+			}
+			for (Map.Entry<String,String> entry : this.proposedDialogs.get(this.currentConcept).htmlTagElements.entrySet()) {
+				tutorTurns.set(i, tutorTurns.get(i).replace(entry.getKey(), entry.getValue()));	
+			}
+		}
+		
+		
+		return tutorTurns;
+	}
+
 	private void processTutorTurns(List<String> tutorTurns)
 	{
+		/* Behzad
+		 * Replace RANDOM_ELEMENT with a random phrase which is loacated into data/<conceptName>
+		 * 
+		 */
+		tutorTurns = replaceRandomPhrase(tutorTurns);
+		source.userMessages.handleToShortMessages(tutorTurns);
+
+		
 		lastTutorTurns = tutorTurns;
 		//TODONE: fire pp TutorTurnsEvent too
 		String[] turns = tutorTurns.toArray(new String[0]);
