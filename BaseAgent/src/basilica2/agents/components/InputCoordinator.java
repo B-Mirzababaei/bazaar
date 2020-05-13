@@ -9,6 +9,8 @@ import basilica2.agents.events.PresenceEvent;
 import basilica2.agents.events.priority.PriorityEvent;
 import basilica2.agents.events.priority.PrioritySource;
 import basilica2.util.MessageEventLogger;
+import basilica2.util.UserMessageHistory;
+
 import edu.cmu.cs.lti.basilica2.core.*;
 import edu.cmu.cs.lti.project911.utils.log.Logger;
 import java.awt.BorderLayout;
@@ -51,7 +53,9 @@ public class InputCoordinator extends Component
     Set<Event> preprocessedEvents = new HashSet<Event>();
     Set<PriorityEvent> proposals = new HashSet<PriorityEvent>();
     private OutputCoordinator outputCoordinator;
-    
+    public UserMessageHistory userMessages = new UserMessageHistory();
+    public String user = null;
+
     
     
     
