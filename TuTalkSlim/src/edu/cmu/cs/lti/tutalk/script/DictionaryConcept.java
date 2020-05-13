@@ -49,6 +49,10 @@ public class DictionaryConcept extends Concept
     public DictionaryConcept(String label) 
     {
         this(label, false);
+        /* Behzad
+    	 *  assign the label of concepts in scenario file to  proprety
+    	 */
+    	//this.label = label;
     }
 
     public DictionaryConcept(String label, boolean exact) 
@@ -91,6 +95,9 @@ public class DictionaryConcept extends Concept
 
     public String getText() 
     {
+        /* Behzad
+    	 * randomly select a question (agent's answer)
+    	 */
         if(phrases.isEmpty())
             return label;
         else

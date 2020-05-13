@@ -125,6 +125,19 @@ public class MessageAnnotator implements BasilicaPreProcessor
 
 	private List<String> matchDictionary(String text, List<String> dictionary)
 	{
+		/* Behzad:
+		 * get a dictionary, in which we have all the phrases of a specific annotation, 
+		 * each key is converted to a regex pattern and then look for the pattern into the response. (Flashtext??) 
+		 */
+		
+		/* Behzad
+		 * sometimes "wplanning" does not match with "\bwplanning\b". I dont know why.
+		 * 
+		 */
+//		text = "wplanning";
+//		if (text.equals("wplanning")) {
+//			int a = 0;
+//		}
 		String text2 = " " + text;
 		List<String> matchedTerms = new ArrayList<String>();
 		for (int j = 0; j < dictionary.size(); j++)
@@ -159,6 +172,9 @@ public class MessageAnnotator implements BasilicaPreProcessor
 	@Override
 	public void preProcessEvent(InputCoordinator source, Event e)
 	{
+		/* Behzad
+		 * If the event is a MessageEvent, it will be handled by handleMessageEvent.
+		 */
 		if (e instanceof MessageEvent)
 		{
 			handleMessageEvent(source, (MessageEvent) e);
@@ -167,6 +183,10 @@ public class MessageAnnotator implements BasilicaPreProcessor
 
 	private void handleMessageEvent(InputCoordinator source, MessageEvent me)
 	{
+		/* Behzad
+		 * This function normalizes the response and tries to match it to a specific annotation.
+		 * Then it adds the annotation to this property Map<String, List<String>> annotations in MessageEvent.java; 
+		 */
 		String text = me.getText();
 		String normalizedText = normalize(text);
 		MessageEvent newme = me;// new MessageEvent(source, me.getFrom(),
@@ -194,6 +214,10 @@ public class MessageAnnotator implements BasilicaPreProcessor
 
 	public static String normalize(String text)
 	{
+		/* Behzad
+		 * Definitely we need a better normalizer. Covering more punctuation ...
+		 * Maybe a spell checker will be needed (or tokenizer)
+		 */
 		if(text == null)
 			return text;
 		

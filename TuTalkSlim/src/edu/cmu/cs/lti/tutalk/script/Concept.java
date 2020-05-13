@@ -52,7 +52,10 @@ public abstract class Concept
     
 
     protected String sanitize(String phrase) 
-    {
+    {    
+        /* Behzad
+        * Clean the responses
+        */
         return " "+phrase.toLowerCase().replaceAll("\\s+", " ").replaceAll("\\|", " ");
     }
 }

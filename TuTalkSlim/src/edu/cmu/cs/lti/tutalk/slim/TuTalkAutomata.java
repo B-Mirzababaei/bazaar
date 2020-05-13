@@ -150,6 +150,10 @@ public class TuTalkAutomata {
         {
             cs.add(expected.get(i).getConcept());
         }
+        /* Behzad
+         * it is a bug!!!
+         * (based on the documents) 
+         */
         cs.add(currentScenario.getConceptLibrary().getConcept("_dont_know_"));
         return evaluator.evaluateTurn(turn, cs, annotations);
     }

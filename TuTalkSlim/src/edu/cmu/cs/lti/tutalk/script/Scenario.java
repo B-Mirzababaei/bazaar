@@ -101,6 +101,9 @@ public class Scenario
 
 		try
 		{
+			/* Behzad
+			 * Somebody help me!!!
+			 */
 			DOMParser parser = new DOMParser();
 			System.err.println("parsing...");
 			parser.parse(filename);
@@ -111,7 +114,7 @@ public class Scenario
 			{
 				Element scenarioElement = (Element) ns1.item(0);
 				sc = new Scenario(filename.replace(".xml", ""));
-
+				// Behzad What does it mean?
 				// Load and configure any NLP components
 
 				NodeList configElement = scenarioElement.getElementsByTagName("configuration");

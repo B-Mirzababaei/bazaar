@@ -126,6 +126,12 @@ public class PromptTable
 
 	public String lookup(String promptName, Map<String, String> slotFillers)
 	{
+		/* Behzad 
+		 *  Handling the prompt :)
+		 *  Check the keys of this Map slotFillers, it contains all things that you could write in your prompt 
+		 *  [AGENT NAME]
+		 * 
+		 */
 		// Do the Prompt
 		List<String> promptTexts = prompts.get(promptName);
 		if (promptTexts != null)

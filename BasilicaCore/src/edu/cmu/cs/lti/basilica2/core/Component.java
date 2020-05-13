@@ -169,6 +169,10 @@ public abstract class Component implements Runnable
 		{
 			if (!myEventQueue.isEmpty())
 			{
+				/* Behzad
+				 * catch an event
+				 * 
+				 */
 				Event e = myEventQueue.remove(0);
 				if (e.isValid())
 				{
@@ -354,6 +358,9 @@ public abstract class Component implements Runnable
 
 	protected void broadcast(Event e)
 	{
+		/* Behzad
+		 * This function is responsible for broadcasting the message (from user or agent)
+		 */
 		if (e.getSender() == null || !e.getSender().equals(this)) e.setSender(this);
 
 		log(Logger.LOG_LOW, "<broadcasting>" + e.getName() + " on " + myOutgoingConnections.size() + " connections</broadcasting>");
