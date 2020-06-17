@@ -1,11 +1,4 @@
 /lightside
-.metadata/.log
-.metadata/.plugins/org.eclipse.tm.terminal.view.ui/.executables/data.properties
-.metadata/.plugins/org.eclipse.m2e.logback.configuration/logback.1.14.0.20191209-1925.xml
-.metadata/version.ini
-.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs
-.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jsch.core.prefs
-.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.prefs
 *.log
 .metadata/
 *.class
@@ -14,3 +7,5 @@ lightside/lightside_log.log
 IDSAIAgent/IDSAIAgent.launch
 IDSAIAgent/IDSAIAgent.launch
 lightside/lightside_log.log
+WeatherLegacyAgent/bin/build.xml
+MTurkLightSideLegacyAgent/bin/build.xml
