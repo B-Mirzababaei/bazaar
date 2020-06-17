@@ -140,7 +140,14 @@ public class WebsocketChatClient extends Component implements ChatClient
 			MessageEvent me = (MessageEvent) e;
 			try
 			{
-				insertMessage(me.getText());
+				String tmp = me.getText();
+				// Behzad: Check the lenght before sending messages
+				if (tmp.strip().length() > 0) {
+					insertMessage(me.getText());
+				} else {
+					int d = 0;
+					
+				}
 			}
 			catch (Exception e1)
 			{
@@ -175,6 +182,7 @@ public class WebsocketChatClient extends Component implements ChatClient
 			}
 			setCallbacks();
 			socket.connect();
+			System.out.println("======178======== adduser " + agentRoomName + "  -----  " + agentUserName );
 			socket.emit("adduser", agentRoomName, agentUserName, new Boolean(false));
 		}
 		catch (Exception e)
@@ -250,6 +258,8 @@ public class WebsocketChatClient extends Component implements ChatClient
 						public void run()
 						{
 							System.out.println("Logging back in to chat room.");
+							System.out.println("======254======== adduser " + agentRoomName + "  -----  " + agentUserName );
+
 							socket.emit("adduser", agentRoomName, agentUserName, new Boolean(false));
 							//socket.emit("sendchat" ,"...and I'm back!");
 						}
@@ -338,8 +348,10 @@ public class WebsocketChatClient extends Component implements ChatClient
 				public void call(Object... args)
 				{
 					String message = (String)args[1];
-					System.out.println("Perspective : " + (String)args[3]);
-					PresenceEvent pe = new PresenceEvent(WebsocketChatClient.this, (String)args[0], message.equals("join")?PresenceEvent.PRESENT:PresenceEvent.ABSENT, (String)args[2], (String)args[3]);
+					//System.out.println("==========================Perspective : " + args[3]);
+
+					System.out.println("Perspective : " +  Integer.toString((int) args[3]));
+					PresenceEvent pe = new PresenceEvent(WebsocketChatClient.this, (String)args[0], message.equals("join")?PresenceEvent.PRESENT:PresenceEvent.ABSENT, Integer.toString((int) args[2]), Integer.toString((int) args[3]));
 					WebsocketChatClient.this.broadcast(pe);
 				}
 			}).on("updateready", new Emitter.Listener() { 
